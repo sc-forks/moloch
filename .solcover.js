@@ -1,8 +1,8 @@
 module.exports = {
-  norpc: true,
-  testCommand: 'node ../node_modules/.bin/buidler --show-stack-traces test --network coverage',
-  compileCommand: 'node ../node_modules/.bin/buidler --show-stack-traces compile --network coverage',
-  buildDirPath: '/artifacts',
+  client: require('ganache-cli'),
+  providerOptions: {
+    mnemonic: "fetch local valve black attend double eye excite planet primary install allow"
+  },
   skipFiles: [
     'Migrations.sol',
     'Token.sol',

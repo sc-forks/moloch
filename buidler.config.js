@@ -1,4 +1,5 @@
 usePlugin('@nomiclabs/buidler-truffle5')
+usePlugin('solidity-coverage')
 
 require('./scripts/moloch-tasks')
 require('./scripts/pool-tasks')
@@ -11,7 +12,6 @@ module.exports = {
   defaultNetwork: "localhost",
   networks: {
     localhost: {
-      gas: 8000000,
       deployedContracts: {
         moloch: '',
         pool: ''

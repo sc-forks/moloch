@@ -6,7 +6,9 @@ artifacts/
 .idea/
 coverage.json
 coverage/
+.coverage_contracts/
+.coverage_artifacts/
+.coverage_cache/
 allFiredEvents
-coverageEnv/
-scTopics
 .DS_Store
+
