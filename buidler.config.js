@@ -11,6 +11,7 @@ module.exports = {
   defaultNetwork: "localhost",
   networks: {
     localhost: {
+      gas: 8000000,
       deployedContracts: {
         moloch: '',
         pool: ''

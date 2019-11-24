@@ -100,7 +100,7 @@ contract('Pool', ([deployer, summoner, firstPoolMember, depositor, firstMemberKe
     return token.approve(pool.address, MAX_UINT256, { from: approver })
   }
 
-  async function submitProposal (applicant, proposer, tribute, shares, description, txParams = {}) {
+  async function submitProposal (applicant, proposer, tribute, shares, description) {
     await sendTokensTo(proposer, PROPOSAL_DEPOSIT)
     await giveAllowanceToMoloch(proposer)
 
@@ -114,7 +114,7 @@ contract('Pool', ([deployer, summoner, firstPoolMember, depositor, firstMemberKe
       tribute,
       shares,
       description,
-      { from: proposer, ...txParams }
+      { from: proposer }
     )
   }
 
@@ -129,7 +129,7 @@ contract('Pool', ([deployer, summoner, firstPoolMember, depositor, firstMemberKe
     // We set the gas manually here because of
     // https://github.com/nomiclabs/buidler/issues/272
     // TODO(@alcuadrado): Remove this when the issue gets fixed
-    return pool.activate(initialTokens, initialShares, { from: activator, gas: 2000000 })
+    return pool.activate(initialTokens, initialShares, { from: activator })
   }
 
   async function assertBNEquals (bnOrPromiseToBn, expectedBnNumberOrString) {
@@ -300,7 +300,7 @@ contract('Pool', ([deployer, summoner, firstPoolMember, depositor, firstMemberKe
         // We set the gas manually here because of
         // https://github.com/nomiclabs/buidler/issues/272
         // TODO(@alcuadrado): Remove this when the issue gets fixed
-        await pool.deposit(tokensNeeded, { from: depositor, gas: 2000000 })
+        await pool.deposit(tokensNeeded, { from: depositor })
           .should.be.rejectedWith('MolochPool: Max number of shares exceeded')
       })
 
@@ -544,19 +544,19 @@ contract('Pool', ([deployer, summoner, firstPoolMember, depositor, firstMemberKe
         // We set the gas manually here because of
         // https://github.com/nomiclabs/buidler/issues/272
         // TODO(@alcuadrado): Remove this when the issue gets fixed
-        await pool.sync(1, { gas: 2000000 }).should.be.rejectedWith('MolochPool: Proposal index too high')
+        await pool.sync(1).should.be.rejectedWith('MolochPool: Proposal index too high')
 
         await submitProposal(proposed, summoner, 0, 1, '')
 
         await pool.sync(1).should.be.fulfilled
 
-        await pool.sync(2, { gas: 2000000 }).should.be.rejectedWith('MolochPool: Proposal index too high')
+        await pool.sync(2).should.be.rejectedWith('MolochPool: Proposal index too high')
 
         await submitProposal(otherAccounts[0], summoner, 0, 1, '')
 
         await pool.sync(2).should.be.fulfilled
 
-        await pool.sync(3, { gas: 2000000 }).should.be.rejectedWith('MolochPool: Proposal index too high')
+        await pool.sync(3).should.be.rejectedWith('MolochPool: Proposal index too high')
       })
 
       it('Should be callable by anyone', async () => {
@@ -578,7 +578,7 @@ contract('Pool', ([deployer, summoner, firstPoolMember, depositor, firstMemberKe
         await advanceTimeInPeriods(VOTING_DURATON_IN_PERIODS + GRACE_DURATON_IN_PERIODS)
         await processProposal(0)
 
-        tx = await pool.sync(1, { gas: 2000000 })
+        tx = await pool.sync(1)
         assertEvent(tx, 'Sync', 1)
       })
 
@@ -807,7 +807,7 @@ contract('Pool', ([deployer, summoner, firstPoolMember, depositor, firstMemberKe
 
       describe('When syncing multiple proposals', () => {
         it('Should sync up to the first non-processed proposal', async function () {
-          // There's a weird bug here with solidity-coverage, that emits the 
+          // There's a weird bug here with solidity-coverage, that emits the
           // events twice
           if (process.env.RUNNING_COVERAGE) {
             return
